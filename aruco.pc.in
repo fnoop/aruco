@@ -7,8 +7,8 @@ includedir=${prefix}/include
 
 Name: @PROJECT_NAME@
 Description: ARUCO Library for marker detection
-Version:  @VERSION@
-Requires: 
+Version: @PROJECT_VERSION@
+Requires: opencv >= 2.1.0
 Conflicts: 
-Libs: -l@PROJECT_NAME@
+Libs: -L${libdir} -l@PROJECT_NAME@
 Cflags: -I${includedir}/@PROJECT_NAME@ -I${includedir}

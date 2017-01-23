@@ -322,5 +322,4 @@ MESSAGE( STATUS )
 
 # pkg-config
 configure_file(aruco.pc.in aruco.pc @ONLY)
-configure_file(aruco-uninstalled.pc.in aruco-uninstalled.pc @ONLY)
-install(FILES "${PROJECT_BINARY_DIR}/aruco-uninstalled.pc" "${PROJECT_BINARY_DIR}/aruco.pc" DESTINATION lib/pkgconfig)
+install(FILES "${PROJECT_BINARY_DIR}/aruco.pc" DESTINATION lib/pkgconfig)
