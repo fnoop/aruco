@@ -1,0 +1,16 @@
+# pkg-config file for the library
+
+prefix=/srv/maverick/software/aruco
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: aruco
+Description: ARUCO Library for marker detection
+Version:  2.0.19
+Requires: opencv >= 2.1.0
+Conflicts: 
+Libs: -L${libdir} -laruco
+Cflags: -I${includedir}/aruco -I${includedir}
+
+
