@@ -1,0 +1,7 @@
+This section implements the work presented in paper: 
+
+
+We use a trained SVM to detect markers in images. The set of markers for which 
+the SVM is trained, is into the zip markers.zip.
+
+The trained svm model files are in the .yml files 

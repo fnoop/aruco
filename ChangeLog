@@ -1,3 +1,68 @@
+Version 3.0.11
+- Conditional addition of levmarq file. Only required in OpenCv < 3.0
+Version 3.0.10
+- Corrected bug in utils/aruco_test so that custom dictionaries can be employed
+
+Version 3.0.9
+    - Addded old style opencv2/xx/xx.hpp headers to compile with 2.4.9 which is default in 16.04
+Version 3.0.8
+    - Changed CameraParameters::operator<< to output xml files
+    - Corrected bug in arucoConfig.cmake in windows systems that ffected to integration of aruco in other projects
+
+Version 3.0.7
+    - properly adapted to compile in Android
+    - arucoConfig file is now saved in aruco/arucoConfig.cmake
+    - Added control of big jumps in MarkerMapPoseTracker. Allows to set a maximum difference with previous position to avoid errors
+Version 3.0.6
+    - Added serialization for MarkerDetector. You can use load/write functions. Allows to save configuration and load it in your app.
+       Use aruco_test to set the best configuration and press 'f' on the app to save the file. Use the file in your apps
+    - Modified aruco_test to allow saving the configuration file.
+    - Added support for enclosed corners calling MarkerDetector::getParameters().detectEnclosedMarkers(true);
+        This is yet experimental.
+    - Added multiples modes of corner refinement (subpixel, lines and none). See MarkerDetector::Params::setCornerRefinementMethod
+    - Improvement in aruco_test application to have more control over the params. Also, allows to save the configuration to file pressing 'f'
+Version 3.0.5
+    - Moved all parameters used in MarkerDetector to MarkerDetector::Params so as to allow serialization
+    - Initial support for enclosed markers
+    - Automatic estimation of the adaptive threshold window size as a function of the image dimensions
+    - Corrected bug in MarkerMapPoseTracker::setParams with the maps expressed in pixels
+Version 3.0.4
+  - Set ALL_DICTS as default behaviour internally in MarkerDetector
+  - Corrected bug in some linux machines with reading directory
+  - Corrected problem with cmake file including the aruco header
+  - Added auto_orient in aruco_calibration_from_images for automatically rotating images taken from cameras if required
+  - Corrected bug in calibration. Ensure camera matrix and distortion coeffs are floats
+  - Enabled minMarkerSize in DM_NORMAL mode
+Version 3.0.3
+  - Changed all opencv2 includes to new style
+  - Corrected compilation error in Opencv 2.4 ( in svnmarkers.cpp related to CV_VERSION_EPOCH)
+Version 3.0.2
+  - added #include <stdexcept> in many files to avoid compilation errors in some old systems
+
+Version 3.0.1
+  - aruco_calibration_fromimage chaged so that it now read files from a dicectory
+Version 3.0.0
+  - Removed all funcions marked as deprecated in version 2.x.x
+  - Removed refinement methods, only subpixel is now available via MarkerDetector::Params::_doSubPixCornerRefinement
+  - MarkerDetector::Params::_maxSize removed
+  - MarkerDetector::Params::_doErosion added for enclosed markers
+  - MarkerDetector::Params::_thresMethod removed, always will use adaptive threshold
+
+Version 2.0.20 (Luis Diaz Collaboration)
+  - clang
+  - cmake improved
+  - many bugs corrected
+  - improved detection of enclosed markers
+  - improved aruco_test app with more options to debug possible misdetections
+Version 2.0.19
+  - corrected bug in utils/aruco_print_marker.cpp
+Version 2.0.18
+  - added support for custom dictionaries
+  - added ChiliTags dictionary
+  - utils/aruco_print_marker added option to print a marker with enclosed squareg to allow subpixel refinement
+Version 2.0.17
+  - Bug in hamming distances corrected
+  - Bug in dictionary.cpp with the creation of
 Version 2.0.16
   - corrected bug in MSVC compilation due to linking problems
 

@@ -1,5 +1,5 @@
-/*****************************
-Copyright 2011 Rafael Muñoz Salinas. All rights reserved.
+/**
+Copyright 2017 Rafael Muñoz Salinas. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
@@ -24,10 +24,11 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Rafael Muñoz Salinas.
-********************************/
+*/
+
 #ifndef _COMMON_ARUCO_
 #define _COMMON_ARUCO_
-#include <opencv/cv.h>
+#include <opencv2/core/core.hpp>
 using namespace cv;
 /**This function reads the matrix intrinsics and the distorsion coefficients from a file.
  * The format of the file is

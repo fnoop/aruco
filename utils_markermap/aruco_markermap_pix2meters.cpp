@@ -1,5 +1,5 @@
-/*****************************
-Copyright 2012 Rafael Muñoz Salinas. All rights reserved.
+/**
+Copyright 2017 Rafael Muñoz Salinas. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
@@ -24,24 +24,28 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Rafael Muñoz Salinas.
-********************************/
+*/
 
 // This program converts a boardconfiguration file expressed in pixel to another one expressed in meters
-#include <iostream>
 #include "markermap.h"
+#include <iostream>
 using namespace std;
 using namespace aruco;
-int main(int argc, char **argv) {
-    try {
-
-        if (argc < 4) {
+int main(int argc, char** argv)
+{
+    try
+    {
+        if (argc < 4)
+        {
             cerr << "Usage:  in_boardConfiguration.yml markerSize_meters out_boardConfiguration.yml" << endl;
             return -1;
         }
         aruco::MarkerMap BInfo;
         BInfo.readFromFile(argv[1]);
-        BInfo.convertToMeters(atof(argv[2])).saveToFile(argv[3]);
-    } catch (std::exception &ex) {
+        BInfo.convertToMeters(static_cast<float>(atof(argv[2]))).saveToFile(argv[3]);
+    }
+    catch (std::exception& ex)
+    {
         cout << ex.what() << endl;
     }
 }

@@ -1,5 +1,5 @@
-/*****************************
-Copyright 2011 Rafael Muñoz Salinas. All rights reserved.
+/**
+Copyright 2017 Rafael Muñoz Salinas. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Rafael Muñoz Salinas.
-********************************/
+*/
 
 #ifndef SVMMARKERS_H
 #define SVMMARKERS_H
@@ -57,13 +57,13 @@ class   SVMMarkers: public MarkerLabeler {
     std::string getName()const{return "SVM";}
 
     //loads the svm file that detects the markers
-    bool load(std::string path="")throw (cv::Exception);
+    bool load(std::string path="") ;
     /**
      * Detect marker in a canonical image.
      * Return marker id in 0 rotation, or -1 if not found
      * Assign the detected rotation of the marker to nRotation
      */
-     bool detect(const cv::Mat &in, int & marker_id,int &nRotations) ;
+     bool detect(const cv::Mat &in, int & marker_id,int &nRotations,std::string &additionalInfo) ;
      int getBestInputSize();
 };
 
