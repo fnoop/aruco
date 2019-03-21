@@ -330,7 +330,7 @@ void PardisoImpl<Derived>::_solve_impl(const MatrixBase<BDerived> &b, MatrixBase
   Index nrhs = Index(b.cols());
   eigen_assert(m_size==b.rows());
   eigen_assert(((MatrixBase<BDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major right hand sides are not supported");
-  eigen_assert(((MatrixBase<XDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major matrices of ALL_DICTSs are not supported");
+  eigen_assert(((MatrixBase<XDerived>::Flags & RowMajorBit) == 0 || nrhs == 1) && "Row-major matrices of unknowns are not supported");
   eigen_assert(((nrhs == 1) || b.outerStride() == b.rows()));
 
 

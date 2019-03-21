@@ -77,7 +77,8 @@ int main(int argc, char** argv)
         {
             // You can also use ids 2000-2007 but it is not safe since there are a lot of false positives.
             cerr << "Usage: <makerid> outfile.(jpg|png|ppm|bmp)  [options] \n\t[-e use enclsing corners]\n\t[-bs <size>:bit size in pixels. 50 by "
-                    "default ] \n\t[-d <dictionary>: ARUCO_MIP_36h12 default]"
+                    "default ] \n\t[-d <dictionary>: ARUCO_MIP_36h12 default] \n\t[-border: adds the white border around]"
+                    "\n\t [-center:  highlights the center] "
                  << endl;
             auto dict_names = aruco::Dictionary::getDicTypes();
             cerr << "\t\tDictionaries: ";
@@ -96,7 +97,7 @@ int main(int argc, char** argv)
         // loads the desired dictionary
         aruco::Dictionary dic = aruco::Dictionary::load(cml("-d", "ARUCO_MIP_36h12"));
 
-        cv::imwrite(argv[2], dic.getMarkerImage_id(stoi(argv[1]), pixSize, waterMark, enclosingCorners));
+        cv::imwrite(argv[2], dic.getMarkerImage_id(stoi(argv[1]), pixSize, waterMark, enclosingCorners,cml["-border"],cml["-center"]));
     }
     catch (std::exception& ex)
     {

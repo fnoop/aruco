@@ -15,9 +15,7 @@ else()
 endif()
 include_directories( ${EIGEN3_INCLUDE_DIR} )
 
-if(USE_DOUBLE_PRECISION_PNP)
-    add_definitions(-DDOUBLE_PRECISION_PNP)
-endif()
+
 
 
 if(EXISTS ${GLUT_PATH})
@@ -26,7 +24,7 @@ if(EXISTS ${GLUT_PATH})
 endif()
 
 ##LOOK FOR OPENGL AND GLUT
-#FIND OPENGL LIBRARY. In Android, there is no need since it is included
+#FIND OPENGL LIBRARY. In Linux, there is no need since it is included
 if(NOT ANDROID_CREATION)
 	if(BUILD_GLSAMPLES)
 		find_package(OpenGL)

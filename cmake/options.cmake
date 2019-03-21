@@ -25,13 +25,18 @@ else()
 endif()
 
 option(USE_OWN_EIGEN3	"Set to OFF to use a standard eigen3 version" ON)
-option(USE_DOUBLE_PRECISION_PNP "Set Double/float precision for posetracker" ON)
 option(BUILD_UTILS	"Set to OFF to not compile utils " ON)
 option(BUILD_TESTS	"Set to OFF to not compile utils " OFF)
 option(BUILD_SHARED_LIBS 	"Set to OFF to build static libraries" ON)
 option(BUILD_GLSAMPLES 	"Set to OFF to build static libraries" OFF)
 option(USE_TIMERS 	"Set to OFF to build static libraries" OFF)
-
+option(BUILD_DEBPACKAGE 	"Set to ON to use cpack" OFF)
+option(ARUCO_DEVINSTALL 	"Set to OFF to disable source installation" ON)
+option(BUILD_FRACTALS 	"Set to ON to use fractals" OFF)
+option(BUILD_VISIONTRIGGER 	"Set to ON to use BUILD_VISIONTRIGGER" OFF)
+ iF(USE_TIMERS)
+add_definitions(-DUSE_TIMERS)
+ENDIF()
 # ----------------------------------------------------------------------------
 #   PROJECT CONFIGURATION
 #   force some variables that could be defined in the command line to be written to cache

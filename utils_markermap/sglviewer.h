@@ -266,14 +266,14 @@ void sgl_OpenCV_Viewer::printHelp(){
 
     //print help commands
     if(!showingHelp)
-            cv::putText(_imshow, "'h' showhelp", cvPoint(30,20), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
+            cv::putText(_imshow, "'h' showhelp", cv::Point(30,20), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
     else{
-        cv::putText(_imshow, "'h' hide help", cvPoint(30,20), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
-        cv::putText(_imshow, "'s' start/stop video", cvPoint(30,40), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
-        cv::putText(_imshow, "'m' change view mode", cvPoint(30,60), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
-        cv::putText(_imshow, "'MOUSE[+SHIFT|CTRL]' change view", cvPoint(30,80), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
-        cv::putText(_imshow, "'n' show/hide marker numbers", cvPoint(30,100), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
-        cv::putText(_imshow, "'c' camera mode on/off", cvPoint(30,120), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(200,200,250), 1, CV_AA);
+        cv::putText(_imshow, "'h' hide help", cv::Point(30,20), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
+        cv::putText(_imshow, "'s' start/stop video", cv::Point(30,40), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
+        cv::putText(_imshow, "'m' change view mode", cv::Point(30,60), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
+        cv::putText(_imshow, "'MOUSE[+SHIFT|CTRL]' change view", cv::Point(30,80), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
+        cv::putText(_imshow, "'n' show/hide marker numbers", cv::Point(30,100), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
+        cv::putText(_imshow, "'c' camera mode on/off", cv::Point(30,120), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(200,200,250), 1);
 
     }
 }

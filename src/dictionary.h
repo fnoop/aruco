@@ -144,7 +144,7 @@ namespace aruco
         //@param bit_size of the image will be  AxA, A=(nbits()+2)*bit_size
         //@param enclosed_corners if true, extra rectagles are added touching the marker corners. it can be used to
         //allow subpixel refinement
-        cv::Mat getMarkerImage_id(int id, int bit_size, bool addWaterMark = true, bool enclosed_corners = false,bool printExternalWhiteBorder=false);
+        cv::Mat getMarkerImage_id(int id, int bit_size, bool addWaterMark = true, bool enclosed_corners = false,bool printExternalWhiteBorder=false,bool centralCircle=false);
 
         // used for boards
         MarkerMap createMarkerMap(cv::Size gridSize, int MarkerSize, int MarkerDistance, const std::vector<int>& Ids,
@@ -194,6 +194,8 @@ namespace aruco
         static std::vector<std::string> getDicTypes();
 
     private:
+        //obfuscate start
+
         void insert(uint64_t code, int id)
         {
             _code_id.insert(std::make_pair(code, id));
@@ -208,6 +210,8 @@ namespace aruco
 
         DICT_TYPES _type;
         std::string _name;
+        //obfuscate end
+
     };
 }
 

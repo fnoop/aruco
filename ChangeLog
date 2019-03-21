@@ -1,3 +1,13 @@
+Version 3.1.0
+- Updated to work with OpenCv 4.x
+- Fractal markers added (optional and not public yet)
+Version 3.0.13
+- Change in the License.
+- Removed CV_AA to avoid compilation problems in some OpenCV versions
+- Removed cv::Mat()=0 to allow compilation with opencv 2.4x
+Version 3.0.12
+- Corrected bug in utils_calibration/dirreader.h.
+- Added cpack to generate debian package
 Version 3.0.11
 - Conditional addition of levmarq file. Only required in OpenCv < 3.0
 Version 3.0.10

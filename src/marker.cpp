@@ -276,9 +276,9 @@ namespace aruco
         cv::line(in, (*this)[3], (*this)[0], color, lineWidth);
 
         auto p2 =  cv::Point2f(2.f * static_cast<float>(lineWidth), 2.f * static_cast<float>(lineWidth));
-        cv::rectangle(in, (*this)[0] - p2, (*this)[0] + p2, cv::Scalar(0, 0, 255, 255), -1, CV_AA);
-        cv::rectangle(in, (*this)[1] - p2, (*this)[1] + p2, cv::Scalar(0, 255, 0, 255), lineWidth, CV_AA);
-        cv::rectangle(in, (*this)[2] - p2, (*this)[2] + p2, cv::Scalar(255, 0, 0, 255), lineWidth, CV_AA);
+        cv::rectangle(in, (*this)[0] - p2, (*this)[0] + p2, cv::Scalar(0, 0, 255, 255), -1);
+        cv::rectangle(in, (*this)[1] - p2, (*this)[1] + p2, cv::Scalar(0, 255, 0, 255), lineWidth);
+        cv::rectangle(in, (*this)[2] - p2, (*this)[2] + p2, cv::Scalar(255, 0, 0, 255), lineWidth);
 
 
 
@@ -297,7 +297,7 @@ namespace aruco
             if(writeInfo) str+= dict_info +":";
             if(writeId)str+=_to_string(id);
             cv::putText(in,str, cent,  cv::FONT_HERSHEY_SIMPLEX, std::max(0.5f, float(lineWidth) * 0.3f),
-                        cv::Scalar(255 - color[0], 255 - color[1], 255 - color[2], 255), std::max(lineWidth, 2));
+                        cv::Scalar(255,0, 255), std::max(lineWidth, 2));
         }
     }
 
@@ -472,5 +472,24 @@ namespace aruco
         str.read((char*)&contourPoints[0], contourPoints.size()*sizeof(contourPoints[0]));
     }
 
+    cv::Mat Marker::getTransformMatrix()const{
+
+        cv::Mat T=cv::Mat::eye(4,4,CV_32F);
+        cv::Mat rot=T.rowRange(0,3).colRange(0,3);
+        cv::Rodrigues(Rvec,rot);
+        for(int i=0;i<3;i++)
+            T.at<float>(i,3)=Tvec.ptr<float>(0)[i];
+        return T;
+    }
+
+    float Marker::getRadius()const{
+
+        auto center=getCenter();
+
+        float maxDist=0;
+        for(auto p:*this)
+            maxDist=std::max(maxDist, float(cv::norm(p-center)) );
+        return maxDist;
+    }
 
 }

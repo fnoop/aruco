@@ -34,6 +34,13 @@ or implied, of Rafael Muñoz Salinas.
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <sstream>
+
+
+#if  CV_MAJOR_VERSION >= 4
+#define CV_FOURCC(a,b,c,d) VideoWriter::fourcc(a,b,c,d)
+#define CV_CAP_PROP_FOURCC cv::CAP_PROP_FOURCC
+#define CV_CAP_PROP_AUTOFOCUS cv::CAP_PROP_AUTOFOCUS
+#endif
 using namespace std;
 using namespace cv;
 using namespace aruco;
@@ -105,8 +112,8 @@ int main(int argc, char** argv)
         }
         TheVideoCapturer.set(CV_CAP_PROP_FOURCC ,CV_FOURCC('M', 'J', 'P', 'G') );
         TheVideoCapturer.set(CV_CAP_PROP_AUTOFOCUS,0);
-        TheVideoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,1280);
-        TheVideoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,720);
+//        TheVideoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,1280);
+//        TheVideoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,720);
         bool saveImages=cml["-save"];
         // read first image to get the dimensions
         TheVideoCapturer >> TheInputImage;

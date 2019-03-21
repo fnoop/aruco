@@ -1166,24 +1166,66 @@ dirent_set_errno(
 #else
 #include <dirent.h>
 #endif
-
+#include <algorithm>    // std::sort
 
 
 
 class DirReader{
 public:
-static std::vector<std::string> read(std::string path){
+
+    struct Params{
+        Params(){}
+        Params(bool SetFullPath){setFullPath=SetFullPath;}
+        bool setFullPath=false;
+        bool removeParentAndThis=true;
+    };
+
+static std::vector<std::string> read(std::string path,std::string ext="",const Params &params=Params()){
     DIR *dir;
     struct dirent *ent;
     std::vector<std::string>  res;
     if ((dir = opendir (path.c_str())) != NULL) {
       /* print all the files and directories within directory */
-      while ((ent = readdir (dir)) != NULL)
-          res.push_back(path+std::string("/")+std::string(ent->d_name));
+      while ((ent = readdir (dir)) != NULL){
+          std::string fname(ent->d_name);
+          bool addit=true;
+          if ( params.removeParentAndThis){
+            if  ( fname=="." || fname=="..")
+                addit=false;
+          }
+          if (addit && !ext.empty()){//check extension
+              std::string thisExt=std::string(fname.begin()+(fname.size()-ext.size()),fname.end());
+              if (thisExt!=ext)
+                  addit=false;
+
+          }
+
+          if(addit){
+              if(params.setFullPath) fname=path+getSeparator()+fname;
+                 res.push_back(fname);
+          }
+      }
       closedir (dir);
     }
+    std::sort(res.begin(),res.end());
     //check
     return res;
+}
+
+static char getSeparator(){
+#ifdef WIN32
+            return  '\\';
+#else
+            return  '/';
+#endif
+}
+
+static std::string basename( std::string const& pathname )
+{
+
+    return std::string(
+        std::find_if( pathname.rbegin(), pathname.rend(),[](char c){return c==getSeparator();} ).base(),
+        pathname.end() );
 }
 
 };

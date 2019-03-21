@@ -2,7 +2,7 @@
 #   Basic Configuration
 # ----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
-project(aruco VERSION "3.0.11" LANGUAGES CXX)
+project(aruco VERSION "3.1.0" LANGUAGES CXX)
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11) # C++11...
@@ -15,7 +15,7 @@ include(cmake/findDependencies.cmake)
 include(cmake/compilerOptions.cmake)
 
 
-add_definitions(-DUSE_SVM_LABELER)
+
 add_subdirectory(src)
 
 if(GL_FOUND AND BUILD_GLSAMPLES)
@@ -30,8 +30,21 @@ if(BUILD_UTILS)
   add_subdirectory(utils)
   add_subdirectory(utils_markermap)
   add_subdirectory(utils_calibration)
+  IF(BUILD_SVM)
   ADD_SUBDIRECTORY(utils_svm)
+  ENDIF()
+  IF(BUILD_VISIONTRIGGER)
+  ADD_SUBDIRECTORY(visiontrigger)
+    endif()
+
+  IF(BUILD_FRACTALS)
+      ADD_SUBDIRECTORY(utils_fractal)
+  ENDIF()
 endif()
 include(cmake/printInfo.cmake)
 include(cmake/installOptions.cmake)
 
+# Package Generator  #######################################################
+IF(BUILD_DEBPACKAGE)
+include(cmake/cpack.cmake)
+ENDIF()

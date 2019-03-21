@@ -170,6 +170,7 @@ int main(int argc, char** argv)
                     "[-minSizeImage <val>: minimum size of a marker in the image. Range (0,1) 1 whole image] "
                     "[-Fraser CX:CY:F:K1:K2:K3:P1:P2:b1:b2] fraser calibration model"
                     "[-MSize <size>] indicates the size of the marker"
+                    "[-fast] uses the fast mode"
                  << endl;
             cerr << "\tDictionaries: ";
             for (auto dict : aruco::Dictionary::getDicTypes())
@@ -194,10 +195,14 @@ int main(int argc, char** argv)
               parseFraserString(cml("-Fraser"),cameraMatrix,FraserDist);
         float msize=stod(cml("-MSize","1.0"));
 
+        aruco::DetectionMode dmode=aruco::DM_NORMAL;
+        if(cml["-fast"]) dmode=aruco::DM_FAST;
 
          // Set the dictionary you want to work with
         // see dictionary.h for all types
         MDetector.setDictionary(cml("-d","ALL_DICTS"), 0.f);
+
+        MDetector.setDetectionMode(dmode,msize);
 
         vector<string> imagesPath=readDir(argv[1]);
         for(auto ip:imagesPath){

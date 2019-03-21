@@ -52,9 +52,9 @@ void CvDrawingUtils::draw3dAxis(cv::Mat& Image, const CameraParameters& CP, cons
        std::vector<Point2f> imagePoints;
        cv::projectPoints(objectPoints, Rvec, Tvec, CP.CameraMatrix, CP.Distorsion, imagePoints);
        // draw lines of different colours
-       cv::line(Image, imagePoints[0], imagePoints[1], Scalar(0, 0, 255, 255), 1, CV_AA);
-       cv::line(Image, imagePoints[0], imagePoints[2], Scalar(0, 255, 0, 255), 1, CV_AA);
-       cv::line(Image, imagePoints[0], imagePoints[3], Scalar(255, 0, 0, 255), 1, CV_AA);
+       cv::line(Image, imagePoints[0], imagePoints[1], Scalar(0, 0, 255, 255), 1);
+       cv::line(Image, imagePoints[0], imagePoints[2], Scalar(0, 255, 0, 255), 1);
+       cv::line(Image, imagePoints[0], imagePoints[3], Scalar(255, 0, 0, 255), 1);
        putText(Image, "x", imagePoints[1], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 0, 255, 255), 2);
        putText(Image, "y", imagePoints[2], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 255, 0, 255), 2);
        putText(Image, "z", imagePoints[3], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 0, 0, 255), 2);
@@ -84,9 +84,9 @@ void CvDrawingUtils::draw3dAxis(cv::Mat& Image, const CameraParameters& CP, cons
         std::vector<Point2f> imagePoints;
         cv::projectPoints(objectPoints, m.Rvec, m.Tvec, CP.CameraMatrix, CP.Distorsion, imagePoints);
         // draw lines of different colours
-        cv::line(Image, imagePoints[0], imagePoints[1], Scalar(0, 0, 255, 255), lineSize, CV_AA);
-        cv::line(Image, imagePoints[0], imagePoints[2], Scalar(0, 255, 0, 255), lineSize, CV_AA);
-        cv::line(Image, imagePoints[0], imagePoints[3], Scalar(255, 0, 0, 255), lineSize, CV_AA);
+        cv::line(Image, imagePoints[0], imagePoints[1], Scalar(0, 0, 255, 255), lineSize);
+        cv::line(Image, imagePoints[0], imagePoints[2], Scalar(0, 255, 0, 255), lineSize);
+        cv::line(Image, imagePoints[0], imagePoints[3], Scalar(255, 0, 0, 255), lineSize);
         putText(Image, "x", imagePoints[1], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 0, 255, 255), 2);
         putText(Image, "y", imagePoints[2], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 255, 0, 255), 2);
         putText(Image, "z", imagePoints[3], FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 0, 0, 255), 2);
@@ -163,12 +163,12 @@ void CvDrawingUtils::draw3dAxis(cv::Mat& Image, const CameraParameters& CP, cons
         projectPoints(objectPoints, m.Rvec, m.Tvec, CP.CameraMatrix, CP.Distorsion, imagePoints);
         // draw lines of different colours
         for (int i = 0; i < 4; i++)
-            cv::line(Image, imagePoints[i], imagePoints[(i + 1) % 4], Scalar(0, 0, 255, 255), lineSize, CV_AA);
+            cv::line(Image, imagePoints[i], imagePoints[(i + 1) % 4], Scalar(0, 0, 255, 255), lineSize);
 
         for (int i = 0; i < 4; i++)
-            cv::line(Image, imagePoints[i + 4], imagePoints[4 + (i + 1) % 4], Scalar(0, 0, 255, 255), lineSize, CV_AA);
+            cv::line(Image, imagePoints[i + 4], imagePoints[4 + (i + 1) % 4], Scalar(0, 0, 255, 255), lineSize);
 
         for (int i = 0; i < 4; i++)
-            cv::line(Image, imagePoints[i], imagePoints[i + 4], Scalar(0, 0, 255, 255), lineSize, CV_AA);
+            cv::line(Image, imagePoints[i], imagePoints[i + 4], Scalar(0, 0, 255, 255), lineSize);
     }
 }
