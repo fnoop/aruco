@@ -36,6 +36,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <string>
 #include <stdexcept>
 #if  CV_MAJOR_VERSION >= 4
+#define CV_CAP_PROP_POS_FRAMES cv::CAP_PROP_POS_FRAMES
 #define CV_CAP_PROP_FRAME_COUNT cv::CAP_PROP_FRAME_COUNT
 #endif
 using namespace std;
