@@ -33,6 +33,7 @@ or implied, of Rafael Muñoz Salinas.
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/features2d/features2d.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <fstream>
 #include <iostream>
@@ -40,6 +41,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <chrono>
 #include <thread>
 #include "debug.h"
+//#include "picoflann.h"
 
 #ifdef _DEBUG
 #include <opencv2/highgui/highgui.hpp>
@@ -188,8 +190,207 @@ void MarkerDetector::buildPyramid(vector<cv::Mat> &ImagePyramid,const cv::Mat &g
     }
 }
 
+void assignClass_fast( const cv::Mat &im, std::vector<cv::KeyPoint>& kpoints, bool norm, int wsize)
+    {
+    if(im.type()!=CV_8UC1)throw std::runtime_error("assignClass_fast Input image must be 8UC1");
+    int wsizeFull=wsize*2+1;
+
+    cv::Mat labels = cv::Mat::zeros(wsize*2+1,wsize*2+1,CV_8UC1);
+    cv::Mat thresIm=cv::Mat(wsize*2+1,wsize*2+1,CV_8UC1);
+
+        for(auto &kp:kpoints)
+        {
+            int x = kp.pt.x+0.5f;
+            int y = kp.pt.y+0.5f;
+
+             cv::Rect r= cv::Rect(x-wsize,y-wsize,wsize*2+1,wsize*2+1);
+            //Check boundaries
+            if(r.x<0 || r.x+r.width>im.cols || r.y<0 || r.y+r.height>im.rows) continue;
 
 
+            int endX=r.x+r.width;
+            int endY=r.y+r.height;
+            uchar minV=255,maxV=0;
+            for(int y=r.y; y<endY; y++){
+                const uchar *ptr=im.ptr<uchar>(y);
+                for(int x=r.x; x<endX; x++)
+                {
+                    if(minV>ptr[x]) minV=ptr[x];
+                    if(maxV<ptr[x]) maxV=ptr[x];
+                }
+            }
+
+            if ((maxV-minV) < 25) {
+                kp.class_id=0;
+                continue;
+            }
+
+            double thres=(maxV+minV)/2.0;
+
+            int nZ=0;
+            //count non zero considering the threshold
+            for(int y=0; y<wsizeFull; y++){
+                const uchar *ptr=im.ptr<uchar>( r.y+y)+r.x;
+                uchar *thresPtr= thresIm.ptr<uchar>(y);
+                for(int x=0; x<wsizeFull; x++){
+                    if( ptr[x]>thres) {
+                        nZ++;
+                        thresPtr[x]=255;
+                    }
+                    else thresPtr[x]=0;
+                }
+            }
+            //set all to zero            labels.setTo(cv::Scalar::all(0));
+            for(int y=0; y<thresIm.rows; y++){
+                uchar *labelsPtr=labels.ptr<uchar>(y);
+                for(int x=0; x<thresIm.cols; x++) labelsPtr[x]=0;
+            }
+
+            uchar newLab = 1;
+            std::map<uchar, uchar> unions;
+            for(int y=0; y<thresIm.rows; y++){
+                uchar *thresPtr=thresIm.ptr<uchar>(y);
+               uchar *labelsPtr=labels.ptr<uchar>(y);
+                for(int x=0; x<thresIm.cols; x++)
+                {
+                    uchar reg = thresPtr[x];
+                    uchar lleft_px = 0;
+                    uchar ltop_px = 0;
+
+                    if(x-1 > -1)
+                    {
+                        if(reg == thresPtr[x-1])
+                            lleft_px =labelsPtr[x-1];
+                    }
+
+                    if(y-1 > -1)
+                    {
+                        if(reg ==thresIm.ptr<uchar>(y-1) [x] )//thresIm.at<uchar>(y-1, x)
+                            ltop_px =  labels.at<uchar>(y-1, x);
+                    }
+
+                    if(lleft_px==0 && ltop_px==0)
+                        labelsPtr[x] = newLab++;
+
+                    else if(lleft_px!=0 && ltop_px!=0)
+                    {
+                        if(lleft_px < ltop_px)
+                        {
+                            labelsPtr[x]  = lleft_px;
+                            unions[ltop_px] = lleft_px;
+                        }
+                        else if(lleft_px > ltop_px)
+                        {
+                            labelsPtr[x]  = ltop_px;
+                            unions[lleft_px] = ltop_px;
+                        }
+                        else
+                        {//IGuales
+                           labelsPtr[x]  = ltop_px;
+                        }
+                    }
+                    else
+                    {
+                        if(lleft_px!=0) labelsPtr[x]  = lleft_px;
+                        else labelsPtr[x]  = ltop_px;
+                    }
+                }
+            }
+
+            int nc= newLab-1 - unions.size();
+            if(nc==2)
+            {
+                if(nZ > thresIm.total()-nZ) kp.class_id = 0;
+                else kp.class_id = 1;
+            }
+            else if (nc > 2) {
+                kp.class_id = 2;
+
+
+            }
+        }
+    }
+
+//void fastCorners{
+//    vector<cv::KeyPoint> kpts;
+//   cv::FAST(input,kpts,7);
+
+//   // Adapter.
+//   // Given an Point2f element, it returns the element of the dimension specified such that dim=0 is x and dim=1 is y
+//   struct PicoFlann_Point2fAdapter{
+//       inline  float operator( )(const cv::KeyPoint &kp, int dim)const { return dim==0?kp.pt.x:kp.pt.y; }
+//   };
+
+//   picoflann::KdTreeIndex<2,PicoFlann_Point2fAdapter>  kdtree;//2 is the number of dimensions
+//   kdtree.build(kpts);
+//   //search 10 nearest neibors to point (0,0)
+//   vector<bool> maxima(kpts.size(),true);
+//   for(auto &kpt:kpts){
+//       kpt.size=1;//used
+//       kpt.class_id=-1;//not yet
+//   }
+
+//   int classIdx=0;
+//   vector<pair< cv::Point2f,double> > center_weight;
+//   center_weight.reserve(kpts.size());
+
+//   for(size_t i=0;i<kpts.size();i++){
+//       if( kpts[i].size){
+//           size_t maxResponseIdx =i;
+//           std::vector<std::pair<uint32_t,double> > res=kdtree.radiusSearch(kpts,kpts[i],7);
+//           //compute the one with max response
+//           for(auto p:res){
+//               if( kpts[p.first].response>= kpts[maxResponseIdx].response && kpts[p.first].size)
+//                   maxResponseIdx= p.first ;
+//           }
+//           auto &maxKp=kpts[ maxResponseIdx];
+
+//           if(maxKp.class_id==-1){
+//               maxKp.class_id=int(center_weight.size());
+//               center_weight.push_back( { maxKp.pt*maxKp.response,maxKp.response});
+//           }
+
+//           //the others are non maxima
+//           for(auto p:res){
+//               if(p.first==maxResponseIdx) continue;
+//               auto  &kp=kpts[p.first];
+//               if( kp.size!=0 &&  kp.class_id==-1){
+//                   kp.size=0;//sets as non maxiima
+//                   center_weight[maxKp.class_id].first+=kp.pt*kp.response;
+//                   center_weight[maxKp.class_id].second+=kp.response;
+//               }
+//           }
+//       }
+//   }
+
+//   //take only the selected ones
+//   kpts.clear();
+//   for(auto cw:center_weight){
+//       cv::KeyPoint kp;
+//       kp.pt= cw.first*(1./cw.second);
+//       kpts.push_back(kp);
+//   }
+
+////   kpts.erase(std::remove_if(kpts.begin(),kpts.end(), [ ](const cv::KeyPoint &kp){return kp.class_id==0;}), kpts.end());
+
+//   assignClass_fast(input,kpts,false,5);
+
+
+//    cv::Mat im2;
+//    cv::cvtColor(input,im2,CV_GRAY2BGR);
+//     for(int i=0;i< kpts.size();i++){
+//        auto & kp=kpts[i];
+
+//        if(kp.class_id==2){
+
+//            cv::rectangle(auxThresImage,kp.pt-cv::Point2f(2,2),kp.pt+cv::Point2f(2,2),cv::Scalar(0,0,0),-1);
+//            cv::rectangle(im2,kp.pt-cv::Point2f(2,2),kp.pt+cv::Point2f(2,2),cv::Scalar(255,0,123));
+//        }
+//        else
+//            cv::rectangle(im2,kp.pt-cv::Point2f(2,2),kp.pt+cv::Point2f(2,2),cv::Scalar(125,125,125));
+//    }
+
+//}
 /**************************************************
      *
      */
@@ -221,7 +422,9 @@ vector< MarkerDetector::MarkerCandidate> MarkerDetector::thresholdAndDetectRecta
      }
     tev.add("thres");
 
-//     //
+
+//fastCorners ()
+
 
     vector<MarkerCandidate> MarkerCanditates;
     // calcualte the min_max contour sizes
@@ -1176,10 +1379,10 @@ void MarkerDetector::draw(Mat out, const vector<Marker>& markers)
 {
     for (unsigned int i = 0; i < markers.size(); i++)
     {
-        cv::line(out, markers[i][0], markers[i][1], cvScalar(255, 0, 0), 2, CV_AA);
-        cv::line(out, markers[i][1], markers[i][2], cvScalar(255, 0, 0), 2, CV_AA);
-        cv::line(out, markers[i][2], markers[i][3], cvScalar(255, 0, 0), 2, CV_AA);
-        cv::line(out, markers[i][3], markers[i][0], cvScalar(255, 0, 0), 2, CV_AA);
+        cv::line(out, markers[i][0], markers[i][1], cvScalar(255, 0, 0), 2);
+        cv::line(out, markers[i][1], markers[i][2], cvScalar(255, 0, 0), 2);
+        cv::line(out, markers[i][2], markers[i][3], cvScalar(255, 0, 0), 2);
+        cv::line(out, markers[i][3], markers[i][0], cvScalar(255, 0, 0), 2);
     }
 }
 

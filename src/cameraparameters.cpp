@@ -98,8 +98,9 @@ namespace aruco
 
     /**
     */
-    cv::Point3f CameraParameters::getCameraLocation(cv::Mat Rvec, cv::Mat Tvec)
+    cv::Point3f CameraParameters::getCameraLocation(const cv::Mat &Rvec,const cv::Mat &Tvec)
     {
+
         cv::Mat m33(3, 3, CV_32FC1);
         cv::Rodrigues(Rvec, m33);
 
@@ -111,6 +112,8 @@ namespace aruco
         // now, add translation information
         for (int i = 0; i < 3; i++)
             m44.at<float>(i, 3) = Tvec.ptr<float>(0)[i];
+
+
         // invert the matrix
         m44.inv();
         return cv::Point3f(m44.at<float>(0, 3), m44.at<float>(1, 3), m44.at<float>(2, 3));
