@@ -1,7 +1,14 @@
-This is a mirror of the aruco code from: https://sourceforge.net/projects/aruco/
+This repo is a mirror of the aruco code from: https://sourceforge.net/projects/aruco/
+
 Note that since version 3.1.0 the licensing has been changed from a permissive license to GPLv3,
- and previous versions have been deleted from sourceforge.  This repo has a release tag v3.0.11
- that contains the permissively licensed code.
+ and previous versions have been deleted from sourceforge.  In addition the underlying logic code
+ has been obsfucated/encrypted.
+ 
+This is the last known version (3.0.13) of permissively licensed, non-obsfucated/encrypted, open code.
+ This branch was forked from 3.0.11 (a good complete copy), and then updates applied from an incomplete
+ repo https://github.com/fnoop/python-aruco.
+ 
+This repo has a release tag v3.0.13
 
 -----------
 
