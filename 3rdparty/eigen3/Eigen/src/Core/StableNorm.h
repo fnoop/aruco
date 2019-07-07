@@ -165,7 +165,7 @@ MatrixBase<Derived>::stableNorm() const
   
   typedef typename internal::nested_eval<Derived,2>::type DerivedCopy;
   typedef typename internal::remove_all<DerivedCopy>::type DerivedCopyClean;
-  const DerivedCopy copy(derived());
+  DerivedCopy copy(derived());
   
   enum {
     CanAlign = (   (int(DerivedCopyClean::Flags)&DirectAccessBit)

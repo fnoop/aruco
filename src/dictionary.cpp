@@ -251,7 +251,7 @@ fromVector(codes,d._code_id);
  * @param id
  * @return
  */
-cv::Mat Dictionary::getMarkerImage_id(int id,int bit_size,bool addWaterMark,bool enclosed_corners,bool externalWhiteBorder,bool centralCircle)
+cv::Mat Dictionary::getMarkerImage_id(int id,int bit_size,bool addWaterMark,bool enclosed_corners,bool externalWhiteBorder)
 {
     const int nBitsSquared = static_cast<int>(std::sqrt(nbits()));
     const int A=bit_size*(2+nBitsSquared);
@@ -288,7 +288,7 @@ cv::Mat Dictionary::getMarkerImage_id(int id,int bit_size,bool addWaterMark,bool
             sprintf(idcad, "#%d", id);
             float ax = static_cast<float>(A) / 100.f;
             int linew = 1 + (img.rows / 500);
-            cv::putText(img, idcad, cv::Point(0, img.rows - img.rows / 40), cv::FONT_HERSHEY_COMPLEX, ax * 0.15f, cv::Scalar::all(30), linew);
+            cv::putText(img, idcad, cv::Point(0, img.rows - img.rows / 40), cv::FONT_HERSHEY_COMPLEX, ax * 0.15f, cv::Scalar::all(30), linew,CV_AA);
 
     }
 
@@ -318,25 +318,6 @@ cv::Mat Dictionary::getMarkerImage_id(int id,int bit_size,bool addWaterMark,bool
         cv::Mat center=biggerImage(cv::Range(borderSize,borderSize+img.rows),cv::Range(borderSize,borderSize+img.cols));
         img.copyTo(center);
         img=biggerImage;
-    }
-
-    if( centralCircle ){
-
-        //at the image center, draw a circle to mark the center
-        cv::Point2f center(img.cols/2,img.rows/2);
-        cv::Mat mask(img.size(),CV_8UC1);
-        mask.setTo(cv::Scalar::all(0));
-        cv::circle(mask,center,sqrt(bit_size),cv::Scalar::all(255),-1);
-        //now, invert the color in the image
-        for(int r=0;r<img.rows;r++){
-            uchar *imgptr=img.ptr<uchar>(r);
-            uchar *maskptr=mask.ptr<uchar>(r);
-            for(int c=0;c<img.cols;c++){
-                if(maskptr[c])
-                    imgptr[c]=255-imgptr[c];
-            }
-        }
-
     }
     return img;
 }

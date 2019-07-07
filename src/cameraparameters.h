@@ -90,12 +90,11 @@ namespace aruco
          */
         void resize(cv::Size size);
 
-        /**Returns the location of the camera in the reference system of the marker.
-         *
-         * Rvec and Tvec are the transform from the marker to the camera as calculated in other parts of the library
+        /**Returns the location of the camera in the reference system given by the rotation and translation vectors
+         * passed
          * NOT TESTED
         */
-        static cv::Point3f getCameraLocation(const cv::Mat &Rvec,const cv::Mat  &Tvec);
+        static cv::Point3f getCameraLocation(cv::Mat Rvec, cv::Mat Tvec);
 
         /**Given the intrinsic camera parameters returns the GL_PROJECTION matrix for opengl.
         * PLease NOTE that when using OpenGL, it is assumed no camera distorsion! So, if it is not true, you should have

@@ -35,10 +35,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <sstream>
 #include <string>
 #include <stdexcept>
-#if  CV_MAJOR_VERSION >= 4
-#define CV_CAP_PROP_POS_FRAMES cv::CAP_PROP_POS_FRAMES
-#define CV_CAP_PROP_FRAME_COUNT cv::CAP_PROP_FRAME_COUNT
-#endif
+
 using namespace std;
 using namespace cv;
 using namespace aruco;
@@ -50,7 +47,7 @@ Mat TheInputImage,TheInputImageGrey, TheInputImageCopy;
 CameraParameters TheCameraParameters;
 void cvTackBarEvents(int pos, void*);
 string dictionaryString;
-int iDetectMode=0,iMinMarkerSize=0,iCorrectionRate=0,iShowAllCandidates=0,iEnclosed=0,iThreshold,iCornerMode,iDictionaryIndex,iTrack=0;
+int iDetectMode=0,iMinMarkerSize=0,iCorrectionRate=0,iShowAllCandidates=0,iEnclosed=0,iThreshold,iCornerMode,iDictionaryIndex=0;
 
 int waitTime = 0;
 bool showMennu=false,bPrintHelp=false,isVideo=false;
@@ -58,16 +55,6 @@ class CmdLineParser{int argc;char** argv;public:CmdLineParser(int _argc, char** 
 struct   TimerAvrg{std::vector<double> times;size_t curr=0,n; std::chrono::high_resolution_clock::time_point begin,end;   TimerAvrg(int _n=30){n=_n;times.reserve(n);   }inline void start(){begin= std::chrono::high_resolution_clock::now();    }inline void stop(){end= std::chrono::high_resolution_clock::now();double duration=double(std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count())*1e-6;if ( times.size()<n) times.push_back(duration);else{ times[curr]=duration; curr++;if (curr>=times.size()) curr=0;}}double getAvrg(){double sum=0;for(auto t:times) sum+=t;return sum/double(times.size());}};
 
 TimerAvrg Fps;
-
-cv::Mat resize(const cv::Mat& in, cv::Size s){
-if(s.width==-1 || s.height==-1)return in;
-cv::Mat im2;
-cv::resize(in, im2, s);
-return im2;
-}
-
-
-
 cv::Mat resize(const cv::Mat& in, int width)
 {
     if (in.size().width <= width)
@@ -76,15 +63,6 @@ cv::Mat resize(const cv::Mat& in, int width)
     cv::Mat im2;
     cv::resize(in, im2, cv::Size(width, static_cast<int>(in.size().height * yf)));
     return im2;
-}
-cv::Mat resizeImage(cv::Mat &in,float resizeFactor){
-    if (fabs(1-resizeFactor)<1e-3 )return in;
-    float nc=float(in.cols)*resizeFactor;
-    float nr=float(in.rows)*resizeFactor;
-    cv::Mat imres;
-    cv::resize(in,imres,cv::Size(nc,nr));
-    cout<<"Imagesize="<<imres.size()<<endl;
-    return imres;
 }
 /************************************
  *
@@ -100,7 +78,6 @@ void setParamsFromGlobalVariables(aruco::MarkerDetector &md){
 
     md.getParameters().detectEnclosedMarkers(iEnclosed);
     md.getParameters().ThresHold=iThreshold;
-    md.getParameters().trackingMinDetections=(iTrack?3:0);
     if ( aruco::Dictionary::getTypeFromString( md.getParameters().dictionary)!=Dictionary::CUSTOM)
             md.setDictionary((aruco::Dictionary::DICT_TYPES) iDictionaryIndex,float(iCorrectionRate)/10. );  // sets the dictionary to be employed (ARUCO,APRILTAGS,ARTOOLKIT,etc)
 }
@@ -109,7 +86,6 @@ void createMenu(){
     cv::createTrackbar("Dictionary", "menu", &iDictionaryIndex, 13, cvTackBarEvents);
    cv::createTrackbar("DetectMode", "menu", &iDetectMode, 2, cvTackBarEvents);
    cv::createTrackbar("CornerMode", "menu", &iCornerMode, 2, cvTackBarEvents);
-   cv::createTrackbar("Track", "menu", &iTrack,1, cvTackBarEvents);
 
    cv::createTrackbar("MinMarkerSize", "menu", &iMinMarkerSize, 1000, cvTackBarEvents);
    cv::createTrackbar("Threshold", "menu", &iThreshold, 40, cvTackBarEvents);
@@ -160,28 +136,21 @@ void printMenuInfo(){
         cv::imshow("menu",image);
 }
 
-
+cv::Mat resizeImage(cv::Mat &in,float resizeFactor){
+    if (fabs(1-resizeFactor)<1e-3 )return in;
+    float nc=float(in.cols)*resizeFactor;
+    float nr=float(in.rows)*resizeFactor;
+    cv::Mat imres;
+    cv::resize(in,imres,cv::Size(nc,nr));
+    cout<<"Imagesize="<<imres.size()<<endl;
+    return imres;
+}
 /************************************
  *
  *
  *
  *
  ************************************/
-cv::Size parseSize(const string &strsize  ){
-    if(strsize.size()==0)return cv::Size(-1,-1);
-    cv::Size s;
-    string ssaux=strsize;
-    for(auto &c:ssaux){
-        if(c==':'){
-            c=' ';
-        }
-    }
-    stringstream sstr;sstr<<ssaux;
-    if( sstr>>s.width>>s.height)
-        return s;
-    return cv::Size(-1,-1);
-
-}
 int main(int argc, char** argv)
 {
     try
@@ -191,7 +160,7 @@ int main(int argc, char** argv)
         {
             cerr << "Invalid number of arguments" << endl;
             cerr << "Usage: (in.avi|live[:camera_index(e.g 0 or 1)]) [-c camera_params.yml] [-s  marker_size_in_meters] [-d "
-                    "dictionary:ALL_DICTS by default] [-h] [-ws w:h] [-skip frames]"
+                    "dictionary:ALL_DICTS by default] [-h]"
                  << endl;
             cerr << "\tDictionaries: ";
             for (auto dict : aruco::Dictionary::getDicTypes())
@@ -213,9 +182,6 @@ int main(int argc, char** argv)
         //resize factor
         float resizeFactor=stof(cml("-rf","1"));
 
-        iMinMarkerSize=stof(cml("-mms","0.0"));
-
-
         ///////////  OPEN VIDEO
         // read from camera or from  file
         if (TheInputVideo.find("live") != string::npos)
@@ -236,37 +202,11 @@ int main(int argc, char** argv)
         else{
             TheVideoCapturer.open(TheInputVideo);
             if ( TheVideoCapturer.get(CV_CAP_PROP_FRAME_COUNT)>=2) isVideo=true;
-            if(cml["-skip"])
-                TheVideoCapturer.set(CV_CAP_PROP_POS_FRAMES,stoi(cml("-skip")));
-
         }
         // check video is open
         if (!TheVideoCapturer.isOpened())
             throw std::runtime_error("Could not open video");
 
-
-        //create windows
-        if(cml["-fs"]){
-            cv::namedWindow("in", cv::WINDOW_FULLSCREEN);
-            cv::namedWindow("thres", cv::WINDOW_FULLSCREEN);
-        }
-        else if(cml["-ws"])
-        {
-            cv::namedWindow("in",cv::WINDOW_NORMAL);
-            cv::Size s=parseSize(cml("-ws"));
-            cv::resizeWindow("in",s.width,s.height);
-            cv::namedWindow("thres",cv::WINDOW_NORMAL);
-            resizeWindow("thres",s.width,s.height);
-
-        }
-
-        else {
-            cv::namedWindow("in",cv::WINDOW_NORMAL);
-            cv::resizeWindow("in",640,480);
-            float w=std::min(int(1920),int(TheInputImage.cols));
-            float f=w/float(TheInputImage.cols);
-            resizeWindow("in",w,float(TheInputImage.rows)*f);
-        }
 
         ///// CONFIGURE DATA
         // read first image to get the dimensions
@@ -279,27 +219,34 @@ int main(int argc, char** argv)
          iThreshold=MDetector.getParameters().ThresHold;
          iCornerMode= MDetector.getParameters().cornerRefinementM;
 
+        cv::namedWindow("in",cv::WINDOW_NORMAL);
+        cv::resizeWindow("in",640,480);
 
         setParamsFromGlobalVariables(MDetector);
 
+        {
+        float w=std::min(int(1920),int(TheInputImage.cols));
+        float f=w/float(TheInputImage.cols);
+        resizeWindow("in",w,float(TheInputImage.rows)*f);
 
+        }
         // go!
         char key = 0;
         int index = 0,indexSave=0;
         // capture until press ESC or until the end of the video
 
-        do
+         do
         {
 
-            TheVideoCapturer.retrieve(TheInputImage);
-             std::cout<<"Frame:"<<TheVideoCapturer.get(CV_CAP_PROP_POS_FRAMES)<<std::endl;
-            TheInputImage=resizeImage(TheInputImage,resizeFactor);
-            // copy image
+             TheVideoCapturer.retrieve(TheInputImage);
+
+             TheInputImage=resizeImage(TheInputImage,resizeFactor);
+              // copy image
             Fps.start();
             TheMarkers = MDetector.detect(TheInputImage, TheCameraParameters, TheMarkerSize);
             Fps.stop();
             // chekc the speed by calculating the mean speed of all iterations
-            cout << "\rTime detection=" << Fps.getAvrg()*1000 << " milliseconds nmarkers=" << TheMarkers.size() <<" images resolution="<<TheInputImage.size() <<std::endl;
+             cout << "\rTime detection=" << Fps.getAvrg()*1000 << " milliseconds nmarkers=" << TheMarkers.size() << std::endl;
 
             // print marker info and draw the markers in image
             TheInputImage.copyTo(TheInputImageCopy);
@@ -328,10 +275,8 @@ int main(int argc, char** argv)
             // show input with augmented information and  the thresholded image
             printInfo(TheInputImageCopy);
             if(showMennu)printMenuInfo();
-
             cv::imshow("thres", resize(MDetector.getThresholdedImage(), 1024));
-
-            cv::imshow("in",  TheInputImageCopy);
+            cv::imshow("in", TheInputImageCopy);
 
             key = cv::waitKey(waitTime);  // wait for key to be pressed
             if (key == 's')
@@ -349,14 +294,14 @@ int main(int argc, char** argv)
                 cv::imwrite(imname,MDetector.getThresholdedImage());
 
             }
-            if (key=='m') {
-                if (showMennu)                     cv::destroyWindow("menu");
-                else {
-                    cv::namedWindow("menu",cv::WINDOW_NORMAL);
-                    cv::resizeWindow("menu",640,480);
-                    createMenu();
-                    printMenuInfo();
-                }
+             if (key=='m') {
+                 if (showMennu)                     cv::destroyWindow("menu");
+                 else {
+                     cv::namedWindow("menu",cv::WINDOW_NORMAL);
+                     cv::resizeWindow("menu",640,480);
+                     createMenu();
+                     printMenuInfo();
+                 }
                 showMennu=!showMennu;
             }
             if (key=='h')bPrintHelp=!bPrintHelp;
@@ -418,7 +363,7 @@ void cvTackBarEvents(int pos, void*)
     if (TheCameraParameters.isValid())
         for (unsigned int i = 0; i < TheMarkers.size(); i++)
             CvDrawingUtils::draw3dCube(TheInputImageCopy, TheMarkers[i], TheCameraParameters);
-    cv::putText(TheInputImageCopy,"fps="+to_string(1./Fps.getAvrg() ),cv::Point(10,20),FONT_HERSHEY_SIMPLEX, 0.5f,cv::Scalar(125,255,255),2);
+    cv::putText(TheInputImageCopy,"fps="+to_string(1./Fps.getAvrg() ),cv::Point(10,20),FONT_HERSHEY_SIMPLEX, 0.5f,cv::Scalar(125,255,255),2,CV_AA);
 
     cv::imshow("in",  TheInputImageCopy );
     cv::imshow("thres", resize(MDetector.getThresholdedImage(), 1024));

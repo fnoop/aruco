@@ -111,10 +111,7 @@ int main(int argc, char** argv)
         if (CamParam.isValid() && MarkerSize != -1)
             for (unsigned int i = 0; i < Markers.size(); i++)
             {
-                if(Markers[i].id==229 || Markers[i].id==161)
-                    cout<< "Camera Location= "<<Markers[i].id<<" "<<CamParam.getCameraLocation(Markers[i].Rvec,Markers[i].Tvec)<<endl;
-                CvDrawingUtils::draw3dAxis(InImage, Markers[i], CamParam);
-              //  CvDrawingUtils::draw3dCube(InImage, Markers[i], CamParam);
+                CvDrawingUtils::draw3dCube(InImage, Markers[i], CamParam);
             }
         // show input with augmented information
         cv::namedWindow("in", 1);
