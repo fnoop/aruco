@@ -1165,7 +1165,7 @@ dirent_set_errno(
 #endif /*DIRENT_H*/
 #else
 #include <dirent.h>
-#endifxx
+#endif
 
 
 

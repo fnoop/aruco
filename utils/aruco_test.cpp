@@ -201,7 +201,7 @@ int main(int argc, char** argv)
         }
         else{
             TheVideoCapturer.open(TheInputVideo);
-            if ( TheVideoCapturer.get(CV_CAP_PROP_FRAME_COUNT)>=2) isVideo=true;
+            if ( TheVideoCapturer.get(cv::CAP_PROP_FRAME_COUNT)>=2) isVideo=true;
         }
         // check video is open
         if (!TheVideoCapturer.isOpened())
@@ -363,7 +363,7 @@ void cvTackBarEvents(int pos, void*)
     if (TheCameraParameters.isValid())
         for (unsigned int i = 0; i < TheMarkers.size(); i++)
             CvDrawingUtils::draw3dCube(TheInputImageCopy, TheMarkers[i], TheCameraParameters);
-    cv::putText(TheInputImageCopy,"fps="+to_string(1./Fps.getAvrg() ),cv::Point(10,20),FONT_HERSHEY_SIMPLEX, 0.5f,cv::Scalar(125,255,255),2,CV_AA);
+    cv::putText(TheInputImageCopy,"fps="+to_string(1./Fps.getAvrg() ),cv::Point(10,20),FONT_HERSHEY_SIMPLEX, 0.5f,cv::Scalar(125,255,255),2,cv::LINE_AA);
 
     cv::imshow("in",  TheInputImageCopy );
     cv::imshow("thres", resize(MDetector.getThresholdedImage(), 1024));

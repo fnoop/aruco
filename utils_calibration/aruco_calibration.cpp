@@ -91,7 +91,7 @@ int main(int argc, char** argv)
             }
             cout << "Opening camera index " << vIdx << endl;
             TheVideoCapturer.open(vIdx);
-            TheVideoCapturer.set(CV_CAP_PROP_AUTOFOCUS, 0);
+            TheVideoCapturer.set(cv::CAP_PROP_AUTOFOCUS, 0);
 
             isLive=true;
          }
@@ -103,10 +103,10 @@ int main(int argc, char** argv)
             cerr << "Could not open video" << endl;
             return -1;
         }
-        TheVideoCapturer.set(CV_CAP_PROP_FOURCC ,CV_FOURCC('M', 'J', 'P', 'G') );
-        TheVideoCapturer.set(CV_CAP_PROP_AUTOFOCUS,0);
-        TheVideoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,1280);
-        TheVideoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,720);
+        TheVideoCapturer.set(cv::CAP_PROP_FOURCC ,VideoWriter::fourcc('M', 'J', 'P', 'G') );
+        TheVideoCapturer.set(cv::CAP_PROP_AUTOFOCUS,0);
+        TheVideoCapturer.set(cv::CAP_PROP_FRAME_WIDTH,1280);
+        TheVideoCapturer.set(cv::CAP_PROP_FRAME_HEIGHT,720);
         bool saveImages=cml["-save"];
         // read first image to get the dimensions
         TheVideoCapturer >> TheInputImage;

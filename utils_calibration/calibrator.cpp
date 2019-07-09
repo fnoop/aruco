@@ -204,7 +204,7 @@ float Calibrator::cameraCalibrate(std::vector<std::vector<aruco::Marker> >  &all
         //first time
          iocam.CamSize = cv::Size(imageWidth,imageHeight);
     }
-    else calibflags=    CV_CALIB_USE_INTRINSIC_GUESS;
+    else calibflags=    cv::CALIB_USE_INTRINSIC_GUESS;
 
 
 
