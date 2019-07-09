@@ -2,7 +2,7 @@
 #   Basic Configuration
 # ----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
-project(aruco VERSION "3.0.11" LANGUAGES CXX)
+project(aruco VERSION "3.0.13" LANGUAGES CXX)
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11) # C++11...
