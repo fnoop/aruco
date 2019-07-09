@@ -6,9 +6,12 @@ Note that since version 3.1.0 the licensing has been changed from a permissive l
  
 This is the last known version (3.0.13) of permissively licensed, non-obsfucated/encrypted, open code.
  This branch was forked from 3.0.11 (a good complete copy), and then updates applied from an incomplete
- repo https://github.com/fnoop/python-aruco.
+ forked repo https://github.com/fnoop/python-aruco.
  
-This repo has a release tag v3.0.13
+This repo has various bugfixes and updates applied to 3.0.13:
+ - Fix and optimize Cortex A8 build for armhf platform (Raspberry)
+ - Fix typo that prevents build
+ - Convert deprecated OpenCV c-style calls to C++
 
 -----------
 
