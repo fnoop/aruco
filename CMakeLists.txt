@@ -5,8 +5,10 @@ cmake_minimum_required(VERSION 3.0)
 project(aruco VERSION "3.0.13" LANGUAGES CXX)
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Enable C++11
 set(CMAKE_CXX_STANDARD 11) # C++11...
-set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE) #...is required...
 set(CMAKE_CXX_EXTENSIONS ON) #...with compiler extensions like gnu++11
 
 include(cmake/options.cmake)
