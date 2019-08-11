@@ -15,3 +15,5 @@ target_link_libraries(aruco_batch_processing    aruco opencv_calib3d opencv_imgc
 
 #aruco_create_board
 INSTALL(TARGETS aruco_batch_processing aruco_tracker aruco_simple aruco_test aruco_print_marker aruco_print_dictionary       RUNTIME DESTINATION bin)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")

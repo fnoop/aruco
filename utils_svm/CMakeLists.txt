@@ -7,3 +7,4 @@ target_link_libraries(aruco_test_svm    aruco opencv_calib3d opencv_videoio open
 
 INSTALL(TARGETS aruco_test_svm RUNTIME DESTINATION bin)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")

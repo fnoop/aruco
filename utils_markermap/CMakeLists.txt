@@ -13,3 +13,5 @@ target_link_libraries(aruco_test_markermap          aruco opencv_calib3d opencv_
 target_link_libraries(aruco_markermap_pix2meters    aruco opencv_calib3d)
  
 install(TARGETS   aruco_create_markermap  aruco_markermap_pix2meters     aruco_simple_markermap aruco_test_markermap    RUNTIME DESTINATION bin)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")

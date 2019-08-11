@@ -37,3 +37,4 @@ endif()
 include(cmake/printInfo.cmake)
 include(cmake/installOptions.cmake)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
