@@ -105,8 +105,10 @@ int main(int argc, char** argv)
         }
         TheVideoCapturer.set(cv::CAP_PROP_FOURCC ,VideoWriter::fourcc('M', 'J', 'P', 'G') );
         TheVideoCapturer.set(cv::CAP_PROP_AUTOFOCUS,0);
-        TheVideoCapturer.set(cv::CAP_PROP_FRAME_WIDTH,1280);
-        TheVideoCapturer.set(cv::CAP_PROP_FRAME_HEIGHT,720);
+        int width=stoi(cml("-width", "640"));
+        int height=stoi(cml("-height", "480"));
+        TheVideoCapturer.set(cv::CAP_PROP_FRAME_WIDTH,width);
+        TheVideoCapturer.set(cv::CAP_PROP_FRAME_HEIGHT,height);
         bool saveImages=cml["-save"];
         // read first image to get the dimensions
         TheVideoCapturer >> TheInputImage;
