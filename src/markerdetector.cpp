@@ -438,7 +438,7 @@ vector< MarkerDetector::MarkerCandidate> MarkerDetector::thresholdAndDetectRecta
 //#define _aruco_debug_detectrectangles
 #ifdef _aruco_debug_detectrectangles
      cv::Mat simage;
-     cv::cvtColor(input,simage,cv::GRAY2BGR);
+     cv::cvtColor(input,simage,cv::COLOR_GRAY2BGR);
 #endif
 
     /// for each contour, analyze if it is a paralelepiped likely to be the marker
@@ -781,7 +781,7 @@ void MarkerDetector::detect(const cv::Mat& input, vector<Marker>& detectedMarker
         _debug_exec(10,//only executes when compiled in DEBUG mode if debug level is at least 10
                     //show the thresholded images
                     cv::Mat imrect;
-                cv::cvtColor(imgToBeThresHolded,imrect,cv::GRAY2BGR);
+                cv::cvtColor(imgToBeThresHolded,imrect,cv::COLOR_GRAY2BGR);
         for(auto m: MarkerCanditates )
             m.draw(imrect,cv::Scalar(0,245,0));
         cv::imshow("rect-nofiltered",imrect);
@@ -794,7 +794,7 @@ void MarkerDetector::detect(const cv::Mat& input, vector<Marker>& detectedMarker
         _debug_exec(10,//only executes when compiled in DEBUG mode if debug level is at least 10
                     //show the thresholded images
                     cv::Mat imrect;
-                cv::cvtColor(imgToBeThresHolded,imrect,cv::GRAY2BGR);
+                cv::cvtColor(imgToBeThresHolded,imrect,cv::COLOR_GRAY2BGR);
         for(auto m: MarkerCanditates)
             m.draw(imrect,cv::Scalar(0,245,0));
         cv::imshow("rect-filtered",imrect);
