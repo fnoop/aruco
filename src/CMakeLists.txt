@@ -43,7 +43,7 @@ set_target_properties(${LIBNAME} PROPERTIES          # create *nix style library
 )
 
 target_link_libraries(${LIBNAME} PUBLIC opencv_core)
-target_link_libraries(${LIBNAME} PRIVATE opencv_imgproc opencv_calib3d opencv_features2d opencv_ml)
+target_link_libraries(${LIBNAME} PRIVATE opencv_imgproc opencv_calib3d opencv_features2d opencv_ml opencv_highgui)
 
 INSTALL(TARGETS ${LIBNAME}
     RUNTIME DESTINATION bin COMPONENT main			# Install the dll file in bin directory
